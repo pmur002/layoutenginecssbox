@@ -1,0 +1,11 @@
+Package: layoutEngineCSSBox
+Type: Package
+Title: Render HTML Using CSSBox
+Version: 0.1-0
+Author: Paul Murrell
+Maintainer: Paul Murrell <paul@stat.auckland.ac.nz>
+Description: A "backend" package for 'layoutEngine' that is based on the
+             CSSBox Java library.
+Depends: layoutEngine
+Imports: rJava
+License: GPL-3
