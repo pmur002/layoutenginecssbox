@@ -13,7 +13,8 @@ cssboxLayout <- function(html, width, height, fonts, device) {
     useFractionalMetrics <- device %in% printDevs
     engine <- .jnew("cssboxEngine");
     htmlfile <- tempfile(tmpdir=wd, fileext=".html")
-    writeLines(as.character(html), htmlfile)
+    HTML <- as.character(html)
+    writeLines(HTML, htmlfile)
     layoutCSV <- .jcall(engine, "S", "layout",
                         paste0("file://", htmlfile),
                         as.integer(width*dpi), as.integer(height*dpi),
@@ -23,4 +24,20 @@ cssboxLayout <- function(html, width, height, fonts, device) {
     do.call(makeLayout, unname(layoutDF[1:10]))
 }
 
-cssboxEngine <- makeEngine(cssboxLayout)
+## CSSBox does not handle numeric font-weight values
+## so transform for string values
+## Set a normal/bold cutoff at 500
+## https://www.w3.org/TR/css-fonts-3/#font-matching-algorithm
+cssboxFontWeight <- function(weight) {
+    if (is.character(weight)) {
+        if (all(weight %in% c("normal", "bold")))
+            return(weight)
+        else
+            stop("Invalid font-weight value")
+    } else {
+        ifelse(as.numeric(weight) > 500, "bold", "normal")
+    }
+}
+
+cssboxEngine <- makeEngine(cssboxLayout,
+                           cssTransform=list(fontWeight=cssboxFontWeight))
