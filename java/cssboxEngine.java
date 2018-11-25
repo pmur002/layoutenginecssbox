@@ -17,6 +17,7 @@ import org.fit.cssbox.io.DefaultDocumentSource;
 import org.fit.cssbox.io.DocumentSource;
 import org.fit.cssbox.layout.BrowserCanvas;
 import org.fit.cssbox.layout.Box;
+import org.fit.cssbox.layout.CSSDecoder;
 import org.fit.cssbox.layout.ElementBox;
 import org.fit.cssbox.layout.TextBox;
 import org.fit.cssbox.layout.VisualContext;
@@ -25,11 +26,23 @@ import org.w3c.dom.Document;
 
 public class cssboxEngine {
 
-    private String boxInfo(Box box) {
+    private String borderWidth(ElementBox el, String which) {
+        String borderWidth = 
+            el.getStylePropertyValue(which);
+        if (borderWidth.length() == 0) {
+            return "NA";
+        } else {
+            return borderWidth.replaceAll("px", "");
+        }        
+    }
+
+    private String boxInfo(Box box, DOMAnalyzer da) {
         String result = "";
         if (box instanceof ElementBox) {
             ElementBox el = (ElementBox) box;
             Rectangle bbox = el.getAbsoluteContentBounds();
+            VisualContext vc = el.getVisualContext();
+            CSSDecoder dec = new CSSDecoder(vc);
             result = el.getElement().getTagName() + "," + 
                 bbox.getX() + "," +
                 bbox.getY() + "," +
@@ -37,11 +50,18 @@ public class cssboxEngine {
                 bbox.getHeight() + "," +
                 // Text is empty, as is font name, 
                 // as is font face (bold or italic), as is font size 
-                ",NA,NA,NA,NA,NA\n";
+                "NA,NA,NA,NA,NA" + "," + 
+                // Does the element display anything?
+                String.valueOf(el.affectsDisplay()).toUpperCase() + "," +
+                borderWidth(el, "border-left-width") + "," +
+                borderWidth(el, "border-top-width") + "," +
+                borderWidth(el, "border-right-width") + "," +
+                borderWidth(el, "border-bottom-width") + 
+                "\n";
             if (el.getSubBoxNumber() > 0) {
                 for (int i = el.getStartChild(); i < el.getEndChild(); i++) {
                     Box sub = el.getSubBox(i);
-                    result = result + boxInfo(sub);
+                    result = result + boxInfo(sub, da);
                 }
             }
         } else if (box instanceof TextBox) {
@@ -56,9 +76,14 @@ public class cssboxEngine {
                 text.getTotalLineHeight() + "," +
                 text.getText() + "," +
                 font.getFamily() + "," +
-                font.isBold() + "," +
-                font.isItalic() + "," +
-                vc.getFontSize() + "\n";
+                String.valueOf(font.isBold()).toUpperCase() + "," +
+                String.valueOf(font.isItalic()).toUpperCase() + "," +
+                vc.getFontSize() + "," + 
+                // affectsDisplay not used
+                "NA" + "," +
+                // No border properties
+                "NA,NA,NA,NA" + 
+                "\n";
         }
         return result;
     }
@@ -97,7 +122,7 @@ public class cssboxEngine {
 
             ElementBox box = browser.getRootBox();
             
-            result = boxInfo(box);
+            result = boxInfo(box, da);
             
             docSource.close();
 

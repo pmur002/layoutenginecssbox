@@ -21,7 +21,7 @@ cssboxLayout <- function(html, width, height, fonts, device) {
                         useFractionalMetrics)
     layoutDF <- read.csv(textConnection(layoutCSV),
                          header=FALSE, stringsAsFactors=FALSE)
-    do.call(makeLayout, unname(layoutDF[1:10]))
+    do.call(makeLayout, unname(layoutDF))
 }
 
 ## CSSBox does not handle numeric font-weight values
