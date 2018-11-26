@@ -26,6 +26,22 @@ import org.w3c.dom.Document;
 
 public class cssboxEngine {
 
+    // Use element 'id' if that exists, 
+    // otherwise, element tag name plus child index
+    private String elementName(ElementBox el, String tagName,
+                               int index, String parentName) {
+        String id = el.getElement().getAttribute("id");
+        if (id.length() > 0) {
+            return parentName + "." + tagName + "." + id;
+        } else {
+            return parentName + "." + tagName + "." + index;
+        }
+    }
+
+    private String textName(int index, String parentName) {
+        return parentName + "." + "TEXT" + "." + index;
+    }
+
     private String borderWidth(ElementBox el, String which) {
         String borderWidth = 
             el.getStylePropertyValue(which);
@@ -36,14 +52,18 @@ public class cssboxEngine {
         }        
     }
 
-    private String boxInfo(Box box, DOMAnalyzer da) {
+    private String boxInfo(Box box, DOMAnalyzer da, 
+                           int index, String parentName) {
         String result = "";
         if (box instanceof ElementBox) {
             ElementBox el = (ElementBox) box;
             Rectangle bbox = el.getAbsoluteContentBounds();
             VisualContext vc = el.getVisualContext();
             CSSDecoder dec = new CSSDecoder(vc);
-            result = el.getElement().getTagName() + "," + 
+            String tagName = el.getElement().getTagName();
+            String elName = elementName(el, tagName, index, parentName);
+            result = tagName + "," +
+                elName + "," + 
                 bbox.getX() + "," +
                 bbox.getY() + "," +
                 bbox.getWidth() + "," +
@@ -61,7 +81,8 @@ public class cssboxEngine {
             if (el.getSubBoxNumber() > 0) {
                 for (int i = el.getStartChild(); i < el.getEndChild(); i++) {
                     Box sub = el.getSubBox(i);
-                    result = result + boxInfo(sub, da);
+                    result = result + 
+                        boxInfo(sub, da, i + 1, elName);
                 }
             }
         } else if (box instanceof TextBox) {
@@ -69,7 +90,8 @@ public class cssboxEngine {
             Rectangle bbox = text.getAbsoluteBounds();
             VisualContext vc = text.getVisualContext();
             Font font = vc.getFont();
-            result = "TEXT," +
+            result = "TEXT" + "," + 
+                textName(index, parentName) + "," +
                 bbox.getX() + "," +
                 bbox.getY() + "," +
                 bbox.getWidth() + "," +
@@ -122,7 +144,7 @@ public class cssboxEngine {
 
             ElementBox box = browser.getRootBox();
             
-            result = boxInfo(box, da);
+            result = boxInfo(box, da, 1, "ROOT");
             
             docSource.close();
 
