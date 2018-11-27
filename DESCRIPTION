@@ -8,4 +8,5 @@ Description: A "backend" package for 'layoutEngine' that is based on the
              CSSBox Java library.
 Depends: layoutEngine
 Imports: rJava
+Suggests: gyre, xtable
 License: GPL-3
