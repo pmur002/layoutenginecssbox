@@ -69,14 +69,22 @@ public class cssboxEngine {
                 bbox.getWidth() + "," +
                 bbox.getHeight() + "," +
                 // Text is empty, as is font name, 
-                // as is font face (bold or italic), as is font size 
-                "NA,NA,NA,NA,NA" + "," + 
-                // Does the element display anything?
-                String.valueOf(el.affectsDisplay()).toUpperCase() + "," +
+                // as is font face (bold or italic), as is font size,
+                // as is font color
+                "NA,NA,NA,NA,NA,NA" + "," + 
+                el.getStylePropertyValue("background-color") + "," +
                 borderWidth(el, "border-left-width") + "," +
                 borderWidth(el, "border-top-width") + "," +
                 borderWidth(el, "border-right-width") + "," +
-                borderWidth(el, "border-bottom-width") + 
+                borderWidth(el, "border-bottom-width") + "," +
+                el.getStylePropertyValue("border-left-style") + "," +
+                el.getStylePropertyValue("border-top-style") + "," +
+                el.getStylePropertyValue("border-right-style") + "," +
+                el.getStylePropertyValue("border-bottom-style") + "," +
+                el.getStylePropertyValue("border-left-color") + "," +
+                el.getStylePropertyValue("border-top-color") + "," +
+                el.getStylePropertyValue("border-right-color") + "," +
+                el.getStylePropertyValue("border-bottom-color") + 
                 "\n";
             if (el.getSubBoxNumber() > 0) {
                 for (int i = el.getStartChild(); i < el.getEndChild(); i++) {
@@ -96,14 +104,17 @@ public class cssboxEngine {
                 bbox.getY() + "," +
                 bbox.getWidth() + "," +
                 text.getTotalLineHeight() + "," +
-                text.getText() + "," +
+                "'" + text.getText() + "'" + "," +
                 font.getFamily() + "," +
                 String.valueOf(font.isBold()).toUpperCase() + "," +
                 String.valueOf(font.isItalic()).toUpperCase() + "," +
                 vc.getFontSize() + "," + 
-                // affectsDisplay not used
-                "NA" + "," +
-                // No border properties
+                text.getParent().getStylePropertyValue("color") + "," + 
+                // No background-color 
+                "NA" + "," + 
+                // No border properties (neither width, style, nor color)
+                "NA,NA,NA,NA" + "," + 
+                "NA,NA,NA,NA" + "," + 
                 "NA,NA,NA,NA" + 
                 "\n";
         }

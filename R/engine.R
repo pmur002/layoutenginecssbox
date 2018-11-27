@@ -20,7 +20,8 @@ cssboxLayout <- function(html, width, height, fonts, device) {
                         as.integer(width*dpi), as.integer(height*dpi),
                         useFractionalMetrics)
     layoutDF <- read.csv(textConnection(layoutCSV),
-                         header=FALSE, stringsAsFactors=FALSE)
+                         header=FALSE, stringsAsFactors=FALSE,
+                         quote="'\"")
     do.call(makeLayout, unname(layoutDF))
 }
 
