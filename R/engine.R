@@ -7,8 +7,11 @@ cssboxLayout <- function(html, width, height, fonts, device) {
     wd <- file.path(tempdir(), "CSSBox")
     if (!dir.exists(wd))
         dir.create(wd)
+    assetDir <- file.path(wd, "assets")
+    if (!dir.exists(assetDir))
+        dir.create(assetDir)    
     ## Copy font files
-    file.copy(fontFiles(fonts, device), wd)
+    file.copy(fontFiles(fonts, device), assetDir)
     ## Copy any assets
     copyAssets(html, wd)
     printDevs <- c("pdf", "postscript", "cairo_pdf", "cairo_ps")
