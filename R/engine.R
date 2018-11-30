@@ -13,7 +13,7 @@ cssboxLayout <- function(html, width, height, fonts, device) {
     ## Copy font files
     file.copy(fontFiles(fonts, device), assetDir)
     ## Copy any assets
-    copyAssets(html, wd)
+    copyAssets(html, assetDir)
     printDevs <- c("pdf", "postscript", "cairo_pdf", "cairo_ps")
     useFractionalMetrics <- device %in% printDevs
     engine <- .jnew("cssboxEngine");
