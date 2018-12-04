@@ -1,5 +1,7 @@
 
 importFrom("layoutEngine",
+           "copyAssets",
+           "fontFiles",
            "makeLayout",
            "makeEngine")
 
@@ -7,5 +9,8 @@ importFrom("rJava",
            ".jcall",
            ".jnew",
            ".jpackage")
+
+importFrom("utils",
+           "read.csv")
 
 export("cssboxEngine")

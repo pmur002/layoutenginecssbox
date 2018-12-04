@@ -68,10 +68,9 @@ public class cssboxEngine {
                 bbox.getY() + "," +
                 bbox.getWidth() + "," +
                 bbox.getHeight() + "," +
-                // Text is empty, as is font name, 
-                // as is font face (bold or italic), as is font size,
-                // as is font color
-                "NA,NA,NA,NA,NA,NA" + "," + 
+                // No text information 
+                // (baseline, text, family, bold, italic, size, color)
+                "NA,NA,NA,NA,NA,NA,NA" + "," + 
                 el.getStylePropertyValue("background-color") + "," +
                 borderWidth(el, "border-left-width") + "," +
                 borderWidth(el, "border-top-width") + "," +
@@ -104,6 +103,7 @@ public class cssboxEngine {
                 bbox.getY() + "," +
                 bbox.getWidth() + "," +
                 text.getTotalLineHeight() + "," +
+                text.getBelowBaseline() + "," +
                 "'" + text.getText() + "'" + "," +
                 font.getFamily() + "," +
                 String.valueOf(font.isBold()).toUpperCase() + "," +
