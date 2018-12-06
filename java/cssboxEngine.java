@@ -142,6 +142,11 @@ public class cssboxEngine {
             //use the additional style sheet
             da.addStyleSheet(null, CSSNorm.userStyleSheet(), 
                              DOMAnalyzer.Origin.AGENT); 
+            // ensure that <body/> has no padding or margins
+            // (so that the size of the content is the size of the page
+            //  which is what we set from R)
+            da.addStyleSheet(null, "body { padding: 0px; margin: 0px }",
+                             DOMAnalyzer.Origin.AGENT);
             //load the author style sheets
             da.getStyleSheets(); 
 
