@@ -18,7 +18,7 @@ cssboxLayout <- function(html, width, height, fonts, device) {
     useFractionalMetrics <- device %in% printDevs
     engine <- .jnew("cssboxEngine");
     htmlfile <- tempfile(tmpdir=wd, fileext=".html")
-    HTML <- as.character(html)
+    HTML <- as.character(html$doc)
     writeLines(HTML, htmlfile)
     layoutCSV <- .jcall(engine, "S", "layout",
                         paste0("file://", htmlfile),
@@ -27,7 +27,8 @@ cssboxLayout <- function(html, width, height, fonts, device) {
     layoutDF <- read.csv(textConnection(layoutCSV),
                          header=FALSE, stringsAsFactors=FALSE,
                          quote="'\"")
-    do.call(makeLayout, unname(layoutDF))
+    names(layoutDF) <- names(layoutFields)
+    do.call(makeLayout, layoutDF)
 }
 
 ## CSSBox does not handle numeric font-weight values
