@@ -42,9 +42,31 @@ public class cssboxEngine {
         return parentName + "." + "TEXT" + "." + index;
     }
 
+    // This could be made SO much more efficient, but getting
+    // ANYTHING to go is my current goal
+    // (the reason for this mucking around is that el.getStylePropertyValue()
+    //  only seems to return some of the values reported by el.getStyle() !)
+    private static String getPropertyValue(ElementBox el, String name) {
+        String[] props = el.getStyleString().split(";");
+        String value = "NA";
+        // System.out.println("Looking for " + name);
+        // System.out.println(props.length + " properties");
+        for (int i=0; i<props.length; i++) {
+            String[] prop = props[i].split(":");
+            // System.out.println("Property " + i + " is called " + prop[0] +
+            //                    "(length " + prop.length + ")");
+            String propName = prop[0].replaceAll("^\\s+|\\s+$", "");
+            if (prop.length > 1 &&
+                propName.equalsIgnoreCase(name)) {
+                value = prop[1].replaceAll("^\\s+|\\s+$", "");
+            }
+        }
+        return value;
+    }
+
     private String borderWidth(ElementBox el, String which) {
         String borderWidth = 
-            el.getStylePropertyValue(which);
+            getPropertyValue(el, which);
         if (borderWidth.length() == 0) {
             return "NA";
         } else {
@@ -70,20 +92,24 @@ public class cssboxEngine {
                 bbox.getHeight() + "," +
                 // No text information 
                 // (baseline, text, family, bold, italic, size, color)
-                "NA,NA,NA,NA,NA,NA,NA" + "," + 
-                el.getStylePropertyValue("background-color") + "," +
+                "NA,NA,NA,NA,NA,NA" + "," + 
+                getPropertyValue(el, "color") + "," +
+                getPropertyValue(el, "direction") + "," +
+                getPropertyValue(el, "background-color") + "," +
                 borderWidth(el, "border-left-width") + "," +
                 borderWidth(el, "border-top-width") + "," +
                 borderWidth(el, "border-right-width") + "," +
                 borderWidth(el, "border-bottom-width") + "," +
-                el.getStylePropertyValue("border-left-style") + "," +
-                el.getStylePropertyValue("border-top-style") + "," +
-                el.getStylePropertyValue("border-right-style") + "," +
-                el.getStylePropertyValue("border-bottom-style") + "," +
-                el.getStylePropertyValue("border-left-color") + "," +
-                el.getStylePropertyValue("border-top-color") + "," +
-                el.getStylePropertyValue("border-right-color") + "," +
-                el.getStylePropertyValue("border-bottom-color") + 
+                getPropertyValue(el, "border-left-style") + "," +
+                getPropertyValue(el, "border-top-style") + "," +
+                getPropertyValue(el, "border-right-style") + "," +
+                getPropertyValue(el, "border-bottom-style") + "," +
+                getPropertyValue(el, "border-left-color") + "," +
+                getPropertyValue(el, "border-top-color") + "," +
+                getPropertyValue(el, "border-right-color") + "," +
+                getPropertyValue(el, "border-bottom-color") + "," +
+                getPropertyValue(el, "list-style-type") + "," +
+                getPropertyValue(el, "list-style-position") + 
                 "\n";
             if (el.getSubBoxNumber() > 0) {
                 for (int i = el.getStartChild(); i < el.getEndChild(); i++) {
@@ -109,13 +135,16 @@ public class cssboxEngine {
                 String.valueOf(font.isBold()).toUpperCase() + "," +
                 String.valueOf(font.isItalic()).toUpperCase() + "," +
                 vc.getFontSize() + "," + 
-                text.getParent().getStylePropertyValue("color") + "," + 
+                getPropertyValue(text.getParent(), "color") + "," + 
+                getPropertyValue(text.getParent(), "direction") + "," + 
                 // No background-color 
                 "NA" + "," + 
                 // No border properties (neither width, style, nor color)
                 "NA,NA,NA,NA" + "," + 
                 "NA,NA,NA,NA" + "," + 
-                "NA,NA,NA,NA" + 
+                "NA,NA,NA,NA" + "," + 
+                // No list item style
+                "NA,NA" +
                 "\n";
         }
         return result;

@@ -11,6 +11,10 @@ importFrom("rJava",
            ".jnew",
            ".jpackage")
 
+importFrom("xml2",
+           "xml_add_child",
+           "xml_find_first")
+
 importFrom("utils",
            "read.csv")
 
