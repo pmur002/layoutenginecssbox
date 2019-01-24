@@ -16,6 +16,8 @@ tests <- function() {
     grid.html('<p style="width: 100px; border-width: 1px">This paragraph should split a line</p>')
     grid.newpage()
     grid.html('<ul><li>a</li><li>simple</li><li>list</li></ul>')
+    grid.newpage()
+    grid.html('<ul><li>nested</li><ul><li>list</li></ul></ul>')
 }
 
 pdf("tests.pdf")

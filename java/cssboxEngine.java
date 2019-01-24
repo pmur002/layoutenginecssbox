@@ -17,7 +17,6 @@ import org.fit.cssbox.io.DefaultDocumentSource;
 import org.fit.cssbox.io.DocumentSource;
 import org.fit.cssbox.layout.BrowserCanvas;
 import org.fit.cssbox.layout.Box;
-import org.fit.cssbox.layout.CSSDecoder;
 import org.fit.cssbox.layout.ElementBox;
 import org.fit.cssbox.layout.TextBox;
 import org.fit.cssbox.layout.VisualContext;
@@ -81,7 +80,6 @@ public class cssboxEngine {
             ElementBox el = (ElementBox) box;
             Rectangle bbox = el.getAbsoluteContentBounds();
             VisualContext vc = el.getVisualContext();
-            CSSDecoder dec = new CSSDecoder(vc);
             String tagName = el.getElement().getTagName();
             String elName = elementName(el, tagName, index, parentName);
             result = tagName + "," +
@@ -91,8 +89,10 @@ public class cssboxEngine {
                 bbox.getWidth() + "," +
                 bbox.getHeight() + "," +
                 // No text information 
-                // (baseline, text, family, bold, italic, size, color)
-                "NA,NA,NA,NA,NA,NA" + "," + 
+                // (baseline, text, family, bold, italic)
+                // although do report text size 
+                "NA,NA,NA,NA,NA" + "," + 
+                vc.getFontSize() + "," + 
                 getPropertyValue(el, "color") + "," +
                 getPropertyValue(el, "direction") + "," +
                 getPropertyValue(el, "background-color") + "," +
